@@ -16,6 +16,7 @@ const randomFunc = {
     symbol: getRandomSymbol
 };
 
+
 // Generator functions - http://www.net-comber.com/charset.html
 
 function getRandomLower() { //generates random lower case letters
@@ -35,21 +36,85 @@ function getRandomSymbol() {
     return symbols[Math.floor(Math.random() * symbols.length)];    
 }
 
-
 //EVENTS
-generateEl.addEventListener('click', () => {
-    if(!lowercaseEl.checked) {
-        resultEl.textContent = '';
-        return;
-    }
-    let resultString = '';
-    for (let i = 0; i < lengthEl.value; i++) {
-        resultString += getRandomLower();
-    }
-    resultEl.textContent = resultString;
-    return resultString;
-    
+generateEl.addEventListener('click', (length) => {
+
+    length = +lengthEl.value;
+    const hasLower = lowercaseEl.checked;
+    const hasUpper = uppercaseEl.checked;
+    const hasNumber = numbersEl.checked;
+    const hasSymbol = symbolsEl.checked;
+
+    resultEl.innerText = generatePassword(hasLower, hasUpper, hasNumber, hasSymbol, length);
 });
+
+
+//GENERATE PASSWORD FUNCTION
+function generatePassword(lower, upper, number, symbol, length) {
+    //1. initialise password variable
+    let generatedPassword = '';
+
+    const typesCount = lower + upper + number + symbol; //number
+    console.log('typesCount: ', typesCount);
+
+    const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter( 
+    item => Object.values(item)[0]); //array of objects
+    
+    //console.log(typesArr);
+    //console.log(typesArr.filter(Boolean));
+    
+    if(typesCount === 0) {//typesCount is a number
+        return '';
+    }
+
+    for(let i = 0; i < length; i += typesCount){ //length is lengthEl.value
+        typesArr.forEach(type => {
+            const funcName = Object.keys(type)[0];
+            
+            generatedPassword += randomFunc[funcName]();
+
+        });
+    }
+    const finalPassword = generatedPassword.slice(0, length);
+    return finalPassword;
+    //2. filter out unchecked types
+    //Loop over the length call a generator function for each type
+    // Add the final password to the pw and return it
+}
+
+
+clipboardEl.addEventListener('click', copy);
+
+function copy() {
+    const textArea = document.createElement('textarea');
+    
+}
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
 
 
 
